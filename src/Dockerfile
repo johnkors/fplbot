@@ -15,8 +15,8 @@ RUN dotnet restore Fpl.Client
 
 # Copy everything else and build
 COPY . ./
-ARG buildId=1338
-RUN dotnet publish FplBot.ConsoleApps/FplBot.ConsoleApps.csproj -c Release -o /app/out/fplbot --version-suffix $buildId
+ARG version=0.1.1337
+RUN dotnet publish FplBot.ConsoleApps/FplBot.ConsoleApps.csproj -c Release -o /app/out/fplbot /property:Version=${version}
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
