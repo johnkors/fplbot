@@ -16,6 +16,8 @@ stages:
       inputs:
         targetType: 'filePath'
         filePath: runnuke.sh 
+      env:
+        buildId: $(Build.BuildId)
 
 - stage: deploy
   dependsOn: CI  
