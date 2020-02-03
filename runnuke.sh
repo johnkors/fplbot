@@ -7,7 +7,7 @@ dotnet tool install --global Nuke.GlobalTool --version 0.24.0
 PATH="${PATH}:/$HOME/.dotnet/tools"
 if [ "$#" -eq  "0" ]
    then
-     nuke
+     nuke PushDockerImageToAzureContainerRegistry
  else
      nuke $1
  fi

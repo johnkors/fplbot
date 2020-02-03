@@ -10,7 +10,7 @@ stages:
     - task: Bash@3
       inputs:
         targetType: 'filePath'
-        filePath: runnuke.sh PushDockerImageToAzureContainerRegistry 
+        filePath: runnuke.sh 
 
 - stage: deploy
   dependsOn: CI  
