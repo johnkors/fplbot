@@ -182,7 +182,7 @@ namespace FplBot.Build
 
         static string BuildId = Environment.GetEnvironmentVariable("buildId"); // Azure DevOps BuildId
         static string AzureContainerRegistry = "blankcontainerregistry.azurecr.io";
-        static string Tag = $"{AzureContainerRegistry}fplbot/fplbot:{BuildId}";
+        static string Tag = $"{AzureContainerRegistry}/fplbot/fplbot:{BuildId}";
 
         Target BuildDockerImageAzureDevops => _ => _
             .DependsOn(Build)
