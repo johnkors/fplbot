@@ -199,13 +199,6 @@ namespace FplBot.Build
             .DependsOn(BuildDockerImageAzureDevops)
             .Executes(() =>
             {
-                DockerLogin(_ => _
-                    .SetArgumentConfigurator(_ =>
-                    {
-                        _.Add($"{AzureContainerRegistry}");
-                        return _;
-                    }));
-                
                 DockerPush(_ =>
                     _.SetName(Tag));
             });
