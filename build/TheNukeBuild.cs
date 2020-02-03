@@ -185,7 +185,7 @@ namespace FplBot.Build
         static string Tag = $"{AzureContainerRegistry}fplbot/fplbot:{BuildId}";
 
         Target BuildDockerImageAzureDevops => _ => _
-            .DependsOn(Test)
+            .DependsOn(Build)
             .Executes(() =>
             {
                 DockerBuild(_ => _
