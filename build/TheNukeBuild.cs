@@ -198,10 +198,9 @@ namespace FplBot.Build
             .Executes(() =>
             {
                 DockerBuild(_ => _
-                    .SetWorkingDirectory(Solution.Directory.Parent)
+                    .SetWorkingDirectory(Solution.Directory)
                     .SetBuildArg($"version={Version}")
                     .SetTag(Tag)
-                    .SetFile("Fplbot.Dockerfile")
                     .SetPath(".")
                 );
             });
