@@ -1,0 +1,34 @@
+stages:
+
+- stage: CI
+  jobs:
+  - job: run_nuke
+    pool:
+      vmImage: 'Ubuntu 16.04'
+
+    steps:
+    - task: Bash@3
+      inputs:
+        targetType: 'filePath'
+        filePath: runnuke.sh PushDockerImageToAzureContainerRegistry 
+
+- stage: deploy
+  dependsOn: CI  
+  jobs:
+  - deployment: deploy_fplbot
+    pool:
+      vmImage: ubuntu-latest
+    environment: test
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@4
+            displayName: 'Deploy fplbot'
+            inputs:
+              appType: webAppContainer
+              ConnectedServiceName: BlankAzure
+              WebAppName: fplbot-worker
+              DockerNamespace: blankcontainerregistry.azurecr.io
+              DockerRepository: fplbot
+              DockerImageTag: $(Build.BuildId)

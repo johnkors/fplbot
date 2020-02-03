@@ -179,5 +179,35 @@ namespace FplBot.Build
                     }));
                 DockerPush(_ => _.SetName("fplbot/fplbot:latest"));
             });
+
+        static string BuildId = Environment.GetEnvironmentVariable("Build.BuildId"); // Azure DevOps BuildId
+        static string AzureContainerRegistry = "blankcontainerregistry.azurecr.io";
+        static string Tag = $"{AzureContainerRegistry}fplbot/fplbot:{BuildId}";
+
+        Target BuildDockerImageAzureDevops => _ => _
+            .DependsOn(Test)
+            .Executes(() =>
+            {
+                DockerBuild(_ => _
+                    .SetWorkingDirectory(Solution.Directory)
+                    .SetTag(Tag)
+                    .SetPath(".")
+                );
+            });
+
+        Target PushDockerImageToAzureContainerRegistry => _ => _
+            .DependsOn(BuildDockerImageAzureDevops)
+            .Executes(() =>
+            {
+                DockerLogin(_ => _
+                    .SetArgumentConfigurator(_ =>
+                    {
+                        _.Add($"{AzureContainerRegistry}");
+                        return _;
+                    }));
+                
+                DockerPush(_ =>
+                    _.SetName(Tag));
+            });
     }
 }
