@@ -20,7 +20,8 @@ COPY /src/FplBot.ConsoleApps/ FplBot.ConsoleApps/
 COPY /src/Fpl.Client/ Fpl.Client/
 
 # Publish
-RUN dotnet publish FplBot.ConsoleApps/FplBot.ConsoleApps.csproj -c Release -o /app/out/fplbot
+ARG version=0.1.1337
+RUN dotnet publish FplBot.ConsoleApps/FplBot.ConsoleApps.csproj -c Release -o /app/out/fplbot /property:Version=${version},InformationalVersion=${version},FileVersion=${version}
 
 # Build runtime image
 FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
