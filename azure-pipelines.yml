@@ -43,4 +43,4 @@ stages:
               WebAppName: fplbot-worker
               DockerNamespace: blankcontainerregistry.azurecr.io
               DockerRepository: fplbot/fplbot
-              DockerImageTag: 0.4.$(Build.BuildId)
+              DockerImageTag: $(Build.BuildNumber)
