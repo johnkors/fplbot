@@ -1,4 +1,6 @@
-using System.Linq;
+using System;
+using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,7 +22,16 @@ namespace FplBot.ConsoleApps
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(c =>
+                .ConfigureWebHostDefaults( (webBuilder) =>
+                {
+                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                    {
+                        webBuilder.UseUrls($"http://*:{80}");
+                    }
+                    
+                    webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((s,c) =>
                 {
                     c.AddEnvironmentVariables();
                     c.AddJsonFile("appsettings.Local.json", optional: true);
