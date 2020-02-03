@@ -18,7 +18,7 @@ COPY . ./
 RUN dotnet publish FplBot.ConsoleApps/FplBot.ConsoleApps.csproj -c Release -o /app/out/fplbot
 
 # Build runtime image
-FROM mcr.microsoft.com/dotnet/core/runtime:3.1
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
 WORKDIR /fplbot
 COPY --from=build-env /app/out/fplbot .
 ENTRYPOINT ["dotnet", "FplBot.ConsoleApps.dll"]
