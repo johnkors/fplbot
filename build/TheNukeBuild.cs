@@ -180,7 +180,7 @@ namespace FplBot.Build
                 DockerPush(_ => _.SetName("fplbot/fplbot:latest"));
             });
 
-        static string BuildId = Environment.GetEnvironmentVariable("buildId"); // Azure DevOps BuildId
+        static string BuildId = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("buildId")) ? Environment.GetEnvironmentVariable("buildId") : "1337" ; // Azure DevOps BuildId
         static string AzureContainerRegistry = "blankcontainerregistry.azurecr.io";
         static string Tag = $"{AzureContainerRegistry}/fplbot/fplbot:{BuildId}";
 
@@ -190,6 +190,7 @@ namespace FplBot.Build
             {
                 DockerBuild(_ => _
                     .SetWorkingDirectory(Solution.Directory)
+                    .SetBuildArg($"buildId={BuildId}")
                     .SetTag(Tag)
                     .SetPath(".")
                 );
