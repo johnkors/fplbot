@@ -40,7 +40,7 @@ stages:
             inputs:
               appType: webAppContainer
               ConnectedServiceName: BlankAzure
-              WebAppName: fplbot-worker
+              WebAppName: fplbot-worker-app
               DockerNamespace: blankcontainerregistry.azurecr.io
               DockerRepository: fplbot/fplbot
               DockerImageTag: $(Build.BuildNumber)
