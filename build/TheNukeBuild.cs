@@ -1,11 +1,14 @@
 using System;
 using Nuke.Common;
+using Nuke.Common.CI.AzurePipelines;
 using Nuke.Common.CI.GitHubActions;
 using Nuke.Common.Execution;
 using Nuke.Common.Git;
+using Nuke.Common.IO;
 using Nuke.Common.ProjectModel;
 using Nuke.Common.Tooling;
 using Nuke.Common.Tools.DotNet;
+using Nuke.Common.Tools.GitVersion;
 using Nuke.Common.Utilities.Collections;
 using Nuke.Docker;
 using static Nuke.Common.IO.FileSystemTasks;
@@ -62,7 +65,7 @@ namespace FplBot.Build
 
         [Solution] readonly Solution Solution;
         [GitRepository] readonly GitRepository GitRepository;
-
+        
         AbsolutePath SourceDirectory => RootDirectory / "src";
         AbsolutePath OutputDirectory => RootDirectory / "releases";
 
@@ -80,11 +83,15 @@ namespace FplBot.Build
                 DotNetRestore(_ => _
                     .SetProjectFile(Solution));
             });
-
+        
         Target Build => _ => _
+            
             .DependsOn(Restore)
+            
             .Executes(() =>
             {
+                AzurePipelines.Instance?.UpdateBuildNumber(Version);
+                
                 DotNetBuild(_ => _
                     .SetProjectFile(Solution)
                     .SetConfiguration(Configuration)
@@ -178,6 +185,32 @@ namespace FplBot.Build
                         return _;
                     }));
                 DockerPush(_ => _.SetName("fplbot/fplbot:latest"));
+            });
+
+        static string BuildId = !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("buildId")) ? Environment.GetEnvironmentVariable("buildId") : "1337" ; // Azure DevOps BuildId
+        static string AzureContainerRegistry = "blankcontainerregistry.azurecr.io";
+        static string Version = $"0.4.{BuildId}";
+
+        static string Tag = $"{AzureContainerRegistry}/fplbot/fplbot:{Version}";
+        
+        Target BuildDockerImageAzureDevops => _ => _
+            .DependsOn(Build)
+            .Executes(() =>
+            {
+                DockerBuild(_ => _
+                    .SetWorkingDirectory(Solution.Directory)
+                    .SetBuildArg($"version={Version}")
+                    .SetTag(Tag)
+                    .SetPath(".")
+                );
+            });
+
+        Target PushDockerImageToAzureContainerRegistry => _ => _
+            .DependsOn(BuildDockerImageAzureDevops)
+            .Executes(() =>
+            {
+                DockerPush(_ =>
+                    _.SetName(Tag));
             });
     }
 }

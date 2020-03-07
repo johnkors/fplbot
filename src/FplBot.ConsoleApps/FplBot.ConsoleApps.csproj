@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Worker">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
@@ -14,11 +14,12 @@
     
     <PackageReference Include="Slackbot.Net" />
     <PackageReference Include="Slackbot.Net.Extensions.Publishers.Logger" />
-    <PackageReference Include="Slackbot.Net.Extensions.Publishers.Slack"  />
+    <PackageReference Include="Slackbot.Net.Extensions.Publishers.Slack" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Fpl.Client\Fpl.Client.csproj" />
     <ProjectReference Include="..\Slackbot.Net.Extensions.FplBot\Slackbot.Net.Extensions.FplBot.csproj" />
   </ItemGroup>
+
 </Project>

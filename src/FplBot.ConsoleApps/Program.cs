@@ -1,10 +1,10 @@
+using System;
 using System.Linq;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Serilog;
-using Serilog.Events;
 using Slackbot.Net.Abstractions.Hosting;
 using Slackbot.Net.Extensions.Publishers.Logger;
 using Slackbot.Net.Extensions.Publishers.Slack;
@@ -20,7 +20,16 @@ namespace FplBot.ConsoleApps
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-                .ConfigureAppConfiguration(c =>
+                .ConfigureWebHostDefaults( (webBuilder) =>
+                {
+                    if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Production")
+                    {
+                        webBuilder.UseUrls($"http://*:{80}");
+                    }
+                    
+                    webBuilder.UseStartup<Startup>();
+                })
+                .ConfigureAppConfiguration((s,c) =>
                 {
                     c.AddEnvironmentVariables();
                     c.AddJsonFile("appsettings.Local.json", optional: true);
